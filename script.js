@@ -1,28 +1,23 @@
 // import octokit
 import { Octokit } from "https://cdn.skypack.dev/@octokit/core";
+// import { Octokit } from "octokit";
 
 const octokit = new Octokit({
-    auth: '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'
+    auth: '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'
 });
 
 try {
-    const result = await octokit.request("GET /repos/{owner}/{repo}/commits", {
-        owner: "lddw",
-        repo: "mongrandfrere",
-    });
-  
-    // show list of commit messages to html
-    const commitList = document.getElementById("commit-list");
-    for (let i = 0; i < result.data.length; i++) {
-        const commit = document.createElement("p");
-        commit.innerText = result.data[i].commit.message;
-        commitList.appendChild(commit);
-    }
+    const repos = await octokit.request("GET /users/{username}/repos", {
+         username: "LDDW",
+    })
 
-    // show lenght of commit list to html
-    const commitListLength = document.getElementById("commit-list-length");
-    commitListLength.innerText = result.data.length;
-  
+    // show list of repos in html
+    const reposList = document.getElementById("repos-list");
+    reposList.innerHTML = repos.data.map(repo => {
+        return `<li><a href="${repo.html_url}">${repo.name}</a></li>`
+    }).join("");
+
+
 } catch (error) {
     console.log(`Error! Status: ${error.status}. Message: ${error.response.data.message}`)
 }
